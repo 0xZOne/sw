@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=“utf-8”>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+</head>
+<body>
+
+<p>
+    <h2>私有持久化存储支持</h2>
+</p>
+<p>
+基本需求:
+<ol>
+    <li>用于以顶级域名划分, 存储一些记录和配置数据。</li>
+    <li>类似LS接口和容量管理，WebView接口无法直接清理。</li>
+    <li>顶级域名下容量限制在2MBytes以内。</li>
+    <li>使用白名单限定使用的域名。</li>
+    <li>清理机制</li>
+    <ol>
+        <li>页面自行清理</li>
+        <li>两周用户未使用时</li>
+    </ol>
+</ol>
+<br />
+</p>
+
+<style>
+div#result{
+	border:none;
+	display:inline-block;
+	outline:0;
+	padding:6px 16px;
+	margin-bottom:10px;
+	vertical-align:middle;
+	overflow:hidden;
+	text-decoration:none;
+	color:#fff;
+	background-color:#F88E8B;
+	text-align:center;
+	transition:.2s ease-out;
+	cursor:pointer;
+	white-space:nowrap;
+	box-shadow:0px 1px 3px rgba(0,0,0,0.12), 0px 1px 2px rgba(0,0,0,0.24);
+}
+</style>
+
+<p><h2>Private Storage Test Result:</h2></p>
+<div id="result"></div>
+<div>
+<input type="button" value="SetItem" onclick="set()"/> <span> Set: (key1, value1), (key2, value2), (key3, value3)</spn> <br />
+<input type="button" value="GetItem" onclick="get()"/> <span> Get: (key3)</spn> <br />
+<div id ="get_item"></div>
+<input type="button" value="removeItem" onclick="remove()"/> <span> remove: (key1)</spn> <br />
+<input type="button" value="clear all" onclick="clearAll()"/> <span><br />
+<input type="button" value="GetAllItem" onclick="keyAndLength()"/> <span> get all item </spn> <br />
+</div>
+<p>
+</p>
+<script>
+window.onload = function() {
+    if('privateStorage' in window) {
+        document.getElementById("result").innerHTML = "Good, 浏览器已支持私有存储！";
+    } else {
+        document.getElementById("result").innerHTML = "Sorry, 浏览器不支持私有存储！";        
+    }
+}
+
+function set() {
+  try {
+    privateStorage.setItem("key1", "value1");
+    privateStorage.key2 = "value2";
+    privateStorage["key3"] = "value3";
+  } catch (e) {
+    alert('Sorry，Access denied :-(');
+  }
+}
+
+function get() {
+  try {
+    var key3 = privateStorage.getItem("key3");
+    alert('getItem("key3"): ' + key3);
+  } catch (e) {
+    alert('Sorry，Access denied :-(');
+  }
+}
+
+function remove() {
+  try {
+    var key = privateStorage.key(0);
+    privateStorage.removeItem(key);
+    var value = privateStorage.getItem(key);
+    if (value == null)
+        alert("removeItem("+ key +"):  Sucess!");
+    else
+        alert("removeItem("+ key +"):  Failed!");
+  } catch (e) {
+    alert('Sorry，Access denied :-(');
+  }
+}
+
+function clearAll() {
+  try {
+    privateStorage.clear();
+  } catch (e) {
+    alert('Sorry，Access denied :-(');
+  }
+}
+
+function keyAndLength() {
+  try {
+    for (var i=0, len = privateStorage.length; i  <  len; i++){
+        var key = privateStorage.key(i);
+        var value = privateStorage.getItem(key);
+        alert(key + "=" + value);
+    }
+  } catch (e) {
+    alert('Sorry，Access denied :-(');
+  } 
+}
+</script>
+</body>
+</html>

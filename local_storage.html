@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=“utf-8”>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+</head>
+<body>
+
+<p>
+    <h2>LocalStorage支持</h2>
+</p>
+
+<style>
+div#result{
+	border:none;
+	display:inline-block;
+	outline:0;
+	padding:6px 16px;
+	margin-bottom:10px;
+	vertical-align:middle;
+	overflow:hidden;
+	text-decoration:none;
+	color:#fff;
+	background-color:#F88E8B;
+	text-align:center;
+	transition:.2s ease-out;
+	cursor:pointer;
+	white-space:nowrap;
+	box-shadow:0px 1px 3px rgba(0,0,0,0.12), 0px 1px 2px rgba(0,0,0,0.24);
+}
+</style>
+
+<p><h2>Local Storage Test Result:</h2></p>
+<div id="result"></div>
+<div>
+<input type="button" value="SetItem" onclick="set()"/> <span> Set: (key1, value1), (key2, value2), (key3, value3)</spn> <br />
+<input type="button" value="GetItem" onclick="get()"/> <span> Get: (key3)</spn> <br />
+<div id ="get_item"></div>
+<input type="button" value="removeItem" onclick="remove()"/> <span> remove: (key1)</spn> <br />
+<input type="button" value="clear all" onclick="clearAll()"/> <span><br />
+<input type="button" value="GetAllItem" onclick="keyAndLength()"/> <span> get all item </spn> <br />
+</div>
+<p>
+</p>
+<script>
+window.onload = function() {
+    if(typeof(localStorage) == "undefined") {
+        document.getElementById("result").innerHTML = "Sorry, LocalStorage不支持";
+    } else {
+        localStorage.setItem("test", "Good, Support LocalStorage!");
+        document.getElementById("result").innerHTML = localStorage.getItem("test");
+    }
+}
+
+function set() {
+  localStorage.setItem("key1", "value1");
+  localStorage.key2 = "value2";
+  localStorage["key3"] = "value3";
+}
+
+function get() {
+    var key3 = localStorage.getItem("key3");
+    alert('getItem("key3"): ' + key3);
+}
+
+function remove() {
+    var key = localStorage.key(0);
+    localStorage.removeItem(key);
+    var value = localStorage.getItem(key);
+    if (value == null)
+        alert("removeItem("+ key +"):  Sucess!");
+    else
+        alert("removeItem("+ key +"):  Failed!");
+}
+
+function clearAll() {
+  localStorage.clear();
+}
+
+function keyAndLength() {
+    for (var i=0, len = localStorage.length; i  <  len; i++){
+        var key = localStorage.key(i);
+        var value = localStorage.getItem(key);
+        alert(key + "=" + value);
+    } 
+}
+
+</script>
+</body>
+</html>

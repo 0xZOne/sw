@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=“utf-8”>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+</head>
+<body>
+
+<p>
+    <h2>私有持久化存储支持</h2>
+</p>
+<p>
+基本需求:
+<ol>
+    <li>用于以顶级域名划分, 存储一些记录和配置数据。</li>
+    <li>类似LS接口和容量管理，WebView接口无法直接清理。</li>
+    <li>顶级域名下容量限制在2MBytes以内。</li>
+    <li>使用白名单限定使用的域名。</li>
+    <li>清理机制</li>
+    <ol>
+        <li>页面自行清理</li>
+        <li>两周用户未使用时</li>
+    </ol>
+</ol>
+<br />
+</p>
+
+<style>
+div#result1,#result2,#result3,#result4,#result5,#result6,#result7{
+	border:none;
+	display:inline-block;
+	outline:0;
+	padding:6px 16px;
+	margin-bottom:10px;
+	vertical-align:middle;
+	text-decoration:none;
+	color:#fff;
+	background-color:#F88E8B;
+	text-align:center;
+	transition:.2s ease-out;
+	cursor:pointer;
+	white-space:nowrap;
+	box-shadow:0px 1px 3px rgba(0,0,0,0.12), 0px 1px 2px rgba(0,0,0,0.24);
+}
+</style>
+
+<p><h2> SetItem Test Result:</h2></p>
+<p>
+<div><input type="button" value="SetItem" onclick="set()"/> set test1 and test2 and test3</div>
+</p>
+<p>
+<div id="result1">result1</div>
+<div id="result2">result2</div>
+<div id="result3">result3</div>
+</p><br />
+<p> <h2> RemoveItem Test Result:</h2> </p>
+<div><input type="button" value="RemoveItem" onclick="remove()"/> remove test1 and test2</div>
+<p>
+<div id="result4">result4</div>
+<div id="result5">result5</div>
+<div id="result6">result6</div>
+</p>
+<script>
+window.onload = function() {
+    if('privateStorage' in window) {
+        document.getElementById("result1").innerHTML = "Sorry, 浏览器不支持私有存储";
+    } else {
+    
+    <!--
+        //privateStorage.setItem("test1", "Good, Test Pass!");
+        //document.getElementById("result1").innerHTML = privateStorage.getItem("test1");
+		
+		
+		//privateStorage.test2 = "test2 pass";
+		//document.getElementById("result2").innerHTML = privateStorage.test2;
+		
+		//privateStorage["test3"] = "test3 pass";
+		//document.getElementById("result3").innerHTML = privateStorage["test3"];
+	-->
+		
+	document.getElementById("result1").innerHTML = privateStorage.getItem("test1");
+	document.getElementById("result2").innerHTML = privateStorage.test2;
+	document.getElementById("result3").innerHTML = privateStorage["test3"];
+    }
+}
+
+function set() {
+		privateStorage.setItem("test1", "test1 pass");
+        document.getElementById("result1").innerHTML = privateStorage.getItem("test1");
+        document.getElementById("result4").innerHTML = privateStorage.getItem("test1");
+		
+		privateStorage.test2 = "test2 pass";
+		document.getElementById("result2").innerHTML = privateStorage.test2;
+		document.getElementById("result5").innerHTML = privateStorage.test2;
+		
+		privateStorage["test3"] = "test3 pass";
+		document.getElementById("result3").innerHTML = privateStorage["test3"];
+		document.getElementById("result6").innerHTML = privateStorage["test3"];
+		
+		//window.location.reload();
+		
+}
+
+ function remove() {
+	privateStorage.removeItem("test1");
+	privateStorage.removeItem("test2");
+
+	document.getElementById("result1").innerHTML = "remove";
+		
+	document.getElementById("result4").innerHTML = privateStorage.getItem("test1");
+	document.getElementById("result5").innerHTML = privateStorage.test2;
+	document.getElementById("result6").innerHTML = privateStorage["test3"];
+	//window.location.reload();
+ }
+ 
+ 
+ function testSize(data, isCn) {
+        var len = data.length * (isCn ? 2 : 1);
+        var i = 0;
+        privateStorage.clear();
+        var totalTime = 0;
+        try {
+            var startTime = +new Date();
+            for(i = 0; i < 1000000; i++) {
+                privateStorage.setItem(i, data);
+				document.getElementById("result7").innerHTML = (len * i /1024) + 'kb';
+            }
+        } catch(e) {
+            console.log(e)
+        }
+        i--;
+        totalTime = Math.floor((+new Date() - startTime) /1000);
+        <!-- console.log('单次存储字节数:' + len + ',key数:' + i + ',耗时:' + totalTime + 's,存储大小:' + (len * i /1024) + 'kb' + ',速度:' + ((len * i /1024) / totalTime) + 'kb/s'); -->
+		
+		document.getElementById("result8").innerHTML = '单次存储字节数:' + len + ',key数:' + i + ',耗时:' + totalTime + 's,存储大小:' + (len * i /1024) + 'kb' + ',速度:' + ((len * i /1024) / totalTime) + 'kb/s';
+    }
+ 
+</script>
+
+
+<p> <h2> Test storage size:</h2> </p>
+<div><input type="button" value="testSize" onclick="testSize('test',0)"/> test Max Size</div>
+<div id="result7"> </div>
+<div id="result8"> </div>
+</body>
+</html>
